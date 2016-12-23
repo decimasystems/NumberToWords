@@ -1,0 +1,24 @@
+{
+  "name": "numbertowords",
+  "version": "0.0.1",
+  "description": "A JavaScript library to convert romanian numbers into words",
+  "main": "numeral.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/decimasystems/NumberToWords.git"
+  },
+  "keywords": [
+    "numeral",
+    "romanian",
+    "letters"
+  ],
+  "author": "Teodora Onoi <teodora@decimasystems.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/decimasystems/NumberToWords/issues"
+  },
+  "homepage": "https://github.com/decimasystems/NumberToWords#readme"
+}
