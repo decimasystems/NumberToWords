@@ -59,7 +59,8 @@ var Numeral = (function () {
             //determin numarul curent format din 3 cifre 
             var curent = this.numar.substr(i - 3, 3);
             if (this.ordin > 0) {
-                this.convertOrdin(curent, 'o', 'doua');
+                s = this.convertOrdin(curent, 'o', 'doua');
+                this.rezultat.push(s);
             }
             this.ordin++;
             //fac conversia pentru un grup
