@@ -5,13 +5,66 @@ var Numeral = (function () {
         //rezultat va fi un string de tip vector
         this.rezultat = [""];
         this.ordin = 0;
-        this._ordinP = ['', 'mii', 'milioane', 'miliarde'];
+        this._ordinP = ['', ' mii', ' milioane', ' miliarde'];
         this._ordinS = ['', 'mie', 'milion', 'miliard'];
-        this._sute = ['', 'o suta ', ' doua sute ', 'trei sute ', 'patru sute ', 'cinci sute ', 'sase sute ', 'sapte sute ', 'opt sute ', 'noua sute '];
+        this._sute = ['', 'o suta ', 'doua sute ', 'trei sute ', 'patru sute ', 'cinci sute ', 'sase sute ', 'sapte sute ', 'opt sute ', 'noua sute '];
         this._zeci = ['', 'zece', 'douazeci', 'treizeci', 'patruzeci', 'cinzeci', 'saizeci', 'saptezeci', 'optzeci', 'nouazeci'];
-        this._unitati = ['', 'un', 'unu', 'doi', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua'];
+        this._unitati = ['', 'unu', 'doi', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua'];
         this._sprezece = ['', 'unsprezece', 'doisprezece', 'treisprezece', 'paisprezece', 'cinsprezece', 'saisprezece', 'saptesprezece', 'optsprezece', 'nouasprezece'];
     }
+    Numeral.prototype.convertDecimal = function () {
+        var ret = null;
+        var value;
+        var integer, decimal;
+        value = this.numar.split(',');
+        integer = new Numeral(value[0]);
+        if (!value[1]) {
+            ret = integer.ToWord();
+        }
+        else {
+            decimal = new Numeral(value[1]);
+            ret = integer.ToWord() + 'virgula ' + decimal.ToWord();
+        }
+        return ret;
+    };
+    ;
+    Numeral.prototype.convertMoney = function (valutaS, valutaP, baniS, baniP) {
+        var ret, rezd, rezi = null;
+        var value;
+        var integer, decimal;
+        var dec;
+        value = this.numar.split(',');
+        integer = new Numeral(value[0]);
+        if (+value[0] == 0) {
+            rezi = 'zero ' + valutaP;
+        }
+        else if (+value[0] > 1) {
+            rezi = integer.ToWord() + valutaP;
+        }
+        else
+            rezi = integer.ToWord() + valutaS;
+        if (value[1]) {
+            if (value[1].length == 1) {
+                value[1] = value[1] + '0';
+                decimal = new Numeral(value[1]);
+                rezd = decimal.ToWord() + baniP;
+            }
+            else {
+                if (value[1] == '01') {
+                    rezd = 'un ' + baniS;
+                }
+                else {
+                    decimal = new Numeral(value[1]);
+                    rezd = decimal.ToWord() + baniP;
+                }
+            }
+            ret = rezi + ' si ' + rezd;
+        }
+        else
+            ret = rezi;
+        return ret;
+    };
+    ;
     Numeral.prototype.ToWord = function () {
         var ret = '';
         var cat;
@@ -41,10 +94,7 @@ var Numeral = (function () {
                 //se face concatenarea grupurilor
                 ret = this.rezultat.join(" ");
                 if (this.numar == '1') {
-                    ret = ret + 'leu';
-                }
-                else {
-                    ret = ret + 'lei';
+                    ret = 'un ';
                 }
             }
         }
@@ -84,7 +134,7 @@ var Numeral = (function () {
             x = this.convertOrdin(curent, 'un ', 'doua ');
         }
         if (!(this.ordin > 0 && (+curent == 1 || +curent == 2))) {
-            x = this.convert(+curent);
+            x = this.convert(+curent) + this._ordinP[this.ordin];
         }
         this.rezultat.push(x);
     };
@@ -133,11 +183,11 @@ var Numeral = (function () {
         }
         //1.3. sute>=1; zeci>1; unitati>=1; 459
         if ((sute >= 1) && (zeci > 1) && (unitati >= 1)) {
-            rezultat = this._sute[sute] + this._zeci[zeci] + ' si ' + this._unitati[unitati + 1];
+            rezultat = this._sute[sute] + this._zeci[zeci] + ' si ' + this._unitati[unitati];
         }
         //1.4. sute>=1; zeci=0; unitati>=1
         if ((sute >= 1) && (zeci == 0) && (unitati > 0)) {
-            rezultat = this._sute[sute] + this._unitati[unitati + 1];
+            rezultat = this._sute[sute] + this._unitati[unitati];
         }
         //caz.2: cifra zecilor
         //2.1. sute=0; zeci=1; unitati=0; 10
@@ -148,13 +198,10 @@ var Numeral = (function () {
             rezultat = this._sprezece[unitati];
         }
         else if ((zeci > 1) && (sute == 0) && (unitati >= 1)) {
-            rezultat = this._zeci[zeci] + ' si ' + this._unitati[unitati + 1];
+            rezultat = this._zeci[zeci] + ' si ' + this._unitati[unitati];
         }
-        else if ((unitati == 1) && (zeci == 0) && (sute == 0)) {
+        else if ((unitati >= 1) && (zeci == 0) && (sute == 0)) {
             rezultat = this._unitati[unitati];
-        }
-        else if ((unitati > 1) && (zeci == 0) && (sute == 0)) {
-            rezultat = this._unitati[unitati + 1];
         }
         return rezultat;
     };

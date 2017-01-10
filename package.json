@@ -1,6 +1,6 @@
 {
   "name": "numbertowords",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "A JavaScript library to convert romanian numbers into words",
   "main": "numeral.js",
   "scripts": {
@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/decimasystems/NumberToWords/issues"
   },
-  "homepage": "https://github.com/decimasystems/NumberToWords#readme"
+  "homepage": "https://github.com/decimasystems/NumberToWords#readme",
+  "dependencies": {
+    "promise": "^7.1.1"
+  }
 }

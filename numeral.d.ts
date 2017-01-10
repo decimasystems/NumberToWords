@@ -9,6 +9,8 @@ export declare class Numeral {
     private _sprezece;
     rezultat: string[];
     constructor(numar: string);
+    convertDecimal(): string;
+    convertMoney(valutaS: any, valutaP: any, baniS: any, baniP: any): any;
     ToWord(): string;
     private convert3Digits(length, size);
     private convert1or2Digits(rest);

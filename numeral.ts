@@ -6,17 +6,72 @@ export class Numeral {
     private _zeci;
     private _unitati;
     private _sprezece;
+
     //rezultat va fi un string de tip vector
     rezultat: string[] = [""];
     constructor(private numar: string) {
         this.ordin = 0;
-        this._ordinP = ['', 'mii', 'milioane', 'miliarde'];
+        this._ordinP = ['', ' mii', ' milioane', ' miliarde'];
         this._ordinS = ['', 'mie', 'milion', 'miliard'];
-        this._sute = ['', 'o suta ', ' doua sute ', 'trei sute ', 'patru sute ', 'cinci sute ', 'sase sute ', 'sapte sute ', 'opt sute ', 'noua sute '];
+        this._sute = ['', 'o suta ', 'doua sute ', 'trei sute ', 'patru sute ', 'cinci sute ', 'sase sute ', 'sapte sute ', 'opt sute ', 'noua sute '];
         this._zeci = ['', 'zece', 'douazeci', 'treizeci', 'patruzeci', 'cinzeci', 'saizeci', 'saptezeci', 'optzeci', 'nouazeci'];
-        this._unitati = ['', 'un', 'unu', 'doi', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua'];
+        this._unitati = ['', 'unu', 'doi', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua'];
         this._sprezece = ['', 'unsprezece', 'doisprezece', 'treisprezece', 'paisprezece', 'cinsprezece', 'saisprezece', 'saptesprezece', 'optsprezece', 'nouasprezece'];
     }
+    public convertDecimal() {
+        var ret: string = null;
+        var value: string[];
+        var integer, decimal: any;
+
+        value = this.numar.split(',');
+        integer = new Numeral(value[0]);
+        if (!value[1]) {
+            ret = integer.ToWord();
+        } else {
+            decimal = new Numeral(value[1]);
+            ret = integer.ToWord() + 'virgula ' + decimal.ToWord();
+        }
+        return ret;
+    };
+
+    public convertMoney(valutaS, valutaP, baniS, baniP) {
+        var ret, rezd, rezi: string = null;
+        var value: string[];
+        var integer, decimal: any;
+        var dec: any;
+
+        value = this.numar.split(',');
+        integer = new Numeral(value[0]);
+
+        if (+value[0] == 0) {
+            rezi = 'zero ' + valutaP;
+        }
+        else if (+value[0] > 1) {
+            rezi = integer.ToWord() + valutaP;
+        }
+        else rezi = integer.ToWord() + valutaS;
+
+        if (value[1]) {
+            if (value[1].length == 1) {
+                value[1] = value[1] + '0';
+                decimal = new Numeral(value[1]) ;
+                rezd = decimal.ToWord() + baniP;
+            } else {
+                if (value[1] == '01') {
+                    rezd = 'un ' + baniS;
+                } else {
+                    decimal = new Numeral(value[1]);
+                    rezd = decimal.ToWord() + baniP;
+                }
+            }
+            ret = rezi + ' si ' + rezd;
+        }
+        else
+            ret = rezi;
+
+        return ret;
+    };
+
     public ToWord() {
         var ret: string = '';
         var cat;
@@ -47,9 +102,7 @@ export class Numeral {
                 //se face concatenarea grupurilor
                 ret = this.rezultat.join(" ");
                 if (this.numar == '1') {
-                    ret = ret + 'leu';
-                } else {
-                    ret = ret + 'lei';
+                    ret = 'un ';
                 }
             }
         }
@@ -65,7 +118,7 @@ export class Numeral {
             //determin numarul curent format din 3 cifre 
             var curent = this.numar.substr(i - 3, 3);
             if (this.ordin > 0) {
-                s=this.convertOrdin(curent, 'o', 'doua');
+                s = this.convertOrdin(curent, 'o', 'doua');
                 this.rezultat.push(s);
             }
             this.ordin++;
@@ -90,7 +143,7 @@ export class Numeral {
         }
 
         if (!(this.ordin > 0 && (+curent == 1 || +curent == 2))) {
-            x = this.convert(+curent);
+            x = this.convert(+curent) + this._ordinP[this.ordin];
         }
         this.rezultat.push(x);
     };
@@ -143,12 +196,12 @@ export class Numeral {
 
         //1.3. sute>=1; zeci>1; unitati>=1; 459
         if ((sute >= 1) && (zeci > 1) && (unitati >= 1)) {
-            rezultat = this._sute[sute] + this._zeci[zeci] + ' si ' + this._unitati[unitati + 1];
+            rezultat = this._sute[sute] + this._zeci[zeci] + ' si ' + this._unitati[unitati];
         }
 
         //1.4. sute>=1; zeci=0; unitati>=1
         if ((sute >= 1) && (zeci == 0) && (unitati > 0)) {
-            rezultat = this._sute[sute] + this._unitati[unitati + 1];
+            rezultat = this._sute[sute] + this._unitati[unitati];
         }
 
         //caz.2: cifra zecilor
@@ -164,20 +217,17 @@ export class Numeral {
 
         //2.3. sute=0; zeci>1; unitati>=1; 61
         else if ((zeci > 1) && (sute == 0) && (unitati >= 1)) {
-            rezultat = this._zeci[zeci] + ' si ' + this._unitati[unitati + 1];
+            rezultat = this._zeci[zeci] + ' si ' + this._unitati[unitati];
         }
 
-        //caz. 3: cifra unitatilor
-        //3.1. sute=0; zeci=0; unitati=1; singular --> un leu
-        else if ((unitati == 1) && (zeci == 0) && (sute == 0)) {
+        //3.2. sute>=1;zeci=0;unitati>=1; --> si unu lei
+        else if ((unitati >= 1) && (zeci == 0) && (sute == 0)) {
             rezultat = this._unitati[unitati];
-        }
-        //3.2. sute>=1;zeci=0;unitati=1; --> si unu lei
-        else if ((unitati > 1) && (zeci == 0) && (sute == 0)) {
-            rezultat = this._unitati[unitati + 1];
         }
 
         return rezultat;
 
     };
+
 };
+
