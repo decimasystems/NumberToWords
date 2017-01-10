@@ -1,4 +1,3 @@
-"use strict";
 var Numeral = (function () {
     function Numeral(numar) {
         this.numar = numar;
@@ -207,6 +206,6 @@ var Numeral = (function () {
     };
     ;
     return Numeral;
-}());
+})();
 exports.Numeral = Numeral;
 ;

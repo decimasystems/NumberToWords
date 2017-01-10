@@ -9,6 +9,7 @@ export class Numeral {
 
     //rezultat va fi un string de tip vector
     rezultat: string[] = [""];
+
     constructor(private numar: string) {
         this.ordin = 0;
         this._ordinP = ['', ' mii', ' milioane', ' miliarde'];
@@ -18,6 +19,7 @@ export class Numeral {
         this._unitati = ['', 'unu', 'doi', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua'];
         this._sprezece = ['', 'unsprezece', 'doisprezece', 'treisprezece', 'paisprezece', 'cinsprezece', 'saisprezece', 'saptesprezece', 'optsprezece', 'nouasprezece'];
     }
+    //metoda pentru conversia de numere cu zecimale   
     public convertDecimal() {
         var ret: string = null;
         var value: string[];
@@ -33,7 +35,7 @@ export class Numeral {
         }
         return ret;
     };
-
+    //metoda pentru convertirea monetara cu zecimale
     public convertMoney(valutaS, valutaP, baniS, baniP) {
         var ret, rezd, rezi: string = null;
         var value: string[];
@@ -54,7 +56,7 @@ export class Numeral {
         if (value[1]) {
             if (value[1].length == 1) {
                 value[1] = value[1] + '0';
-                decimal = new Numeral(value[1]) ;
+                decimal = new Numeral(value[1]);
                 rezd = decimal.ToWord() + baniP;
             } else {
                 if (value[1] == '01') {
@@ -71,8 +73,8 @@ export class Numeral {
 
         return ret;
     };
-
-    public ToWord() {
+//metoda de conversie a numerelor in cuvinte
+public ToWord() {
         var ret: string = '';
         var cat;
         var rest;
