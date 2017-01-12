@@ -12,7 +12,7 @@ export class Numeral {
 
     constructor(private numar: string) {
         this.ordin = 0;
-        this._ordinP = ['', ' mii', ' milioane', ' miliarde'];
+        this._ordinP = ['', 'mii', 'milioane', 'miliarde'];
         this._ordinS = ['', 'mie', 'milion', 'miliard'];
         this._sute = ['', 'o suta ', 'doua sute ', 'trei sute ', 'patru sute ', 'cinci sute ', 'sase sute ', 'sapte sute ', 'opt sute ', 'noua sute '];
         this._zeci = ['', 'zece', 'douazeci', 'treizeci', 'patruzeci', 'cinzeci', 'saizeci', 'saptezeci', 'optzeci', 'nouazeci'];
@@ -36,36 +36,55 @@ export class Numeral {
         return ret;
     };
     //metoda pentru convertirea monetara cu zecimale
-    public convertMoney(valutaS, valutaP, baniS, baniP) {
+    public convertMoney(valutaS, valutaP, baniS, baniP, virgula, punct, separator) {
         var ret, rezd, rezi: string = null;
         var value: string[];
+        var ordinsep: string[];
+        var r: any;
         var integer, decimal: any;
         var dec: any;
 
-        value = this.numar.split(',');
+        value = this.numar.split(virgula);
+        if (punct == '.') {
+            value[0] = value[0].replace(/\./g, '');
+        } else if (punct == ',') {
+            value[0] = value[0].replace(/\,/g, '');
+        }
+
         integer = new Numeral(value[0]);
 
         if (+value[0] == 0) {
-            rezi = 'zero ' + valutaP;
+            rezi = 'zero' + separator + valutaP;
+        } else if (+value[0] > 1) {
+
+            if (+value[0] >= 20) {
+                rezi = integer.ToWord(separator) + 'de' + separator + valutaP;
+            } else
+                rezi = integer.ToWord(separator) + valutaP;
         }
-        else if (+value[0] > 1) {
-            rezi = integer.ToWord() + valutaP;
-        }
-        else rezi = integer.ToWord() + valutaS;
+        else rezi = integer.ToWord(separator) + valutaS;
 
         if (value[1]) {
             if (value[1].length == 1) {
                 value[1] = value[1] + '0';
                 decimal = new Numeral(value[1]);
-                rezd = decimal.ToWord() + baniP;
+                if (value[1] == '10') {
+                    rezd = decimal.ToWord(separator) + baniP;
+                } else
+                    rezd = decimal.ToWord(separator) + 'de' + separator + baniP;
             } else {
                 if (value[1] == '01') {
-                    rezd = 'un ' + baniS;
+                    rezd = 'un' + separator + baniS;
                 } else {
                     decimal = new Numeral(value[1]);
-                    rezd = decimal.ToWord() + baniP;
+                    rezd = decimal.ToWord(separator) + baniP;
+                    if (value[1] >= '20' || value[1] >= '2') {
+                        decimal = new Numeral(value[1]);
+                        rezd = decimal.ToWord(separator) + 'de' + separator + baniP;
+                    }
                 }
             }
+
             ret = rezi + ' si ' + rezd;
         }
         else
@@ -73,8 +92,9 @@ export class Numeral {
 
         return ret;
     };
-//metoda de conversie a numerelor in cuvinte
-public ToWord() {
+
+    //metoda de conversie a numerelor in cuvinte
+    public ToWord(separator) {
         var ret: string = '';
         var cat;
         var rest;
@@ -84,7 +104,7 @@ public ToWord() {
         } else {
             //size va fi egal cu lungimea sirului
             var size = this.numar.length;
-            if (size > "999999999999".length) {
+            if (size > "999999999999,99".length) {
                 ret = "numar prea mare";
             } else {
 
@@ -93,18 +113,19 @@ public ToWord() {
 
                 //grupurile de 3 cifre
                 if (rest == 0) {
-                    this.convert3Digits(0, size);
+                    this.convert3Digits(0, size, separator);
                 } //grupurile de 1 sau 2 cifre
                 else {
-                    this.convert3Digits(rest, size);
-                    this.convert1or2Digits(rest);
+                    this.convert3Digits(rest, size, separator);
+                    this.convert1or2Digits(rest, separator);
                 }
                 //rastorn rezultatul pentru a avea ordinea corecta a grupurilor
                 this.rezultat.reverse();
                 //se face concatenarea grupurilor
-                ret = this.rezultat.join(" ");
+                ret = this.rezultat.join(separator);
+
                 if (this.numar == '1') {
-                    ret = 'un ';
+                    ret = 'un' + separator;
                 }
             }
         }
@@ -112,7 +133,7 @@ public ToWord() {
     };
 
     //converteste toate grupurile de 3 cifre
-    private convert3Digits(length, size) {
+    private convert3Digits(length, size, separator) {
 
         var s: string;
         //extrag grupul de 3 cifre de la dreapta spre stanga  parcurgand sirul 
@@ -120,60 +141,58 @@ public ToWord() {
             //determin numarul curent format din 3 cifre 
             var curent = this.numar.substr(i - 3, 3);
             if (this.ordin > 0) {
-                s = this.convertOrdin(curent, 'o', 'doua');
+                s = this.convertOrdin(curent, 'o', 'doua', separator);
                 this.rezultat.push(s);
             }
             this.ordin++;
             //fac conversia pentru un grup
-            s = this.convert(+curent);
+            s = this.convert(+curent, separator);
             //rezultatul fiind un sir il voi baga intr-un vector pentru a putea face concatenarea
             this.rezultat.push(s);
         }
     };
 
     //converteste toate grupurile de 1 sau 2 cifre
-    private convert1or2Digits(rest) {
+    private convert1or2Digits(rest, separator) {
         //rest=1 sau rest=2
         var curent = this.numar.substr(0, rest);
         var x: string = "";
         //fac conversia pentru un grup
         //rezultatul fiind un sir il voi baga intr-un vector pentru a putea face concatenarea
         if (this.ordin == 1) {
-            x = this.convertOrdin(curent, 'o ', 'doua ');
+            x = this.convertOrdin(curent, 'o', 'doua', separator);
         } else if (this.ordin > 1) {
-            x = this.convertOrdin(curent, 'un ', 'doua ');
+            x = this.convertOrdin(curent, 'un', 'doua', separator);
         }
 
         if (!(this.ordin > 0 && (+curent == 1 || +curent == 2))) {
-            x = this.convert(+curent) + this._ordinP[this.ordin];
+            x = this.convert(+curent, separator) + separator + this._ordinP[this.ordin];
         }
         this.rezultat.push(x);
     };
 
     // ordin mii, milioane, miliarde
-    private convertOrdin(curent, one, two) {
+    private convertOrdin(curent, one, two, separator) {
         var ret;
         curent = +curent;
         if (curent == 1) {
-            ret = one + this._ordinS[this.ordin];
+            ret = one + separator + this._ordinS[this.ordin];
         } else if (curent == 2) {
-            ret = two + this._ordinP[this.ordin];
-        } else if (curent >= 3 && curent < 20) {
+            ret = two + separator + this._ordinP[this.ordin];
+        } else if ((curent >= 3 && curent <= 19) || (curent >= 101 && curent <= 119) || (curent >= 201 && curent <= 219) ||
+            (curent >= 301 && curent <= 319) || (curent >= 401 && curent <= 419) || (curent >= 501 && curent <= 619)
+            || (curent >= 701 && curent <= 719) || (curent >= 801 && curent <= 819) || (curent >= 901 && curent <= 919)) {
             ret = this._ordinP[this.ordin];
-        } else if (curent >= 20) {
-            ret = 'de ' + this._ordinP[this.ordin];
-        }
+        } else ret = 'de' + separator + this._ordinP[this.ordin];
+
         return ret;
     };
 
-    private convert(valoare: number) {
-
+    private convert(valoare: number, separator) {
         var sute, zeci, unitati: any;
-
         if (valoare == 0) {
             return "";
         }
-
         //determin pentru grupul de 3 cifre cel al sutelor -- cifra sutelor, zecilor si unitatilor   
         sute = Math.floor(valoare / 100);
         zeci = Math.floor((valoare % 100) / 10);
@@ -182,7 +201,7 @@ public ToWord() {
 
         //caz.1: cifra sutelor
         //1.1: sute=1; zeci=0; unitati=0; 100
-        if ((sute >= 1) && (zeci == 0) && (unitati == 0)) {    //toate cond. sunt indeplinite simultan
+        if ((sute >= 1) && (zeci == 0) && (unitati == 0)) {
             rezultat = this._sute[sute];
         }
 
@@ -198,9 +217,8 @@ public ToWord() {
 
         //1.3. sute>=1; zeci>1; unitati>=1; 459
         if ((sute >= 1) && (zeci > 1) && (unitati >= 1)) {
-            rezultat = this._sute[sute] + this._zeci[zeci] + ' si ' + this._unitati[unitati];
+            rezultat = this._sute[sute] + this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati];
         }
-
         //1.4. sute>=1; zeci=0; unitati>=1
         if ((sute >= 1) && (zeci == 0) && (unitati > 0)) {
             rezultat = this._sute[sute] + this._unitati[unitati];
@@ -210,6 +228,10 @@ public ToWord() {
         //2.1. sute=0; zeci=1; unitati=0; 10
         if ((zeci >= 1) && (sute == 0) && (unitati == 0)) {
             rezultat = this._zeci[zeci];
+        } else if ((this.ordin >= 1) && (sute == 0) && (zeci > 1) && (unitati == 2)) {
+            rezultat = this._zeci[zeci] + separator + 'si doua' + separator + 'de';
+        } else if ((this.ordin >= 1) && (sute == 0) && (zeci > 1) && (unitati == 1 || unitati > 2)) {
+            rezultat = this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati] + separator + 'de';
         }
 
         //2.2. sute=0; zeci=1; unitati>=1; 14
@@ -219,12 +241,16 @@ public ToWord() {
 
         //2.3. sute=0; zeci>1; unitati>=1; 61
         else if ((zeci > 1) && (sute == 0) && (unitati >= 1)) {
-            rezultat = this._zeci[zeci] + ' si ' + this._unitati[unitati];
+            rezultat = this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati];
         }
 
-        //3.2. sute>=1;zeci=0;unitati>=1; --> si unu lei
-        else if ((unitati >= 1) && (zeci == 0) && (sute == 0)) {
+        //caz.3. cifra unitatilor
+        //3.1. sute>=1;zeci=0;unitati>=1; --> si unu lei
+        if ((unitati >= 1) && (zeci == 0) && (sute == 0)) {
             rezultat = this._unitati[unitati];
+        }
+        if ((this.ordin > 1) && (sute >= 1) && (zeci == 0 || zeci > 1) && (unitati == 2)) {
+            rezultat = this._sute[sute] + this._zeci[zeci] + separator + 'si doua';
         }
 
         return rezultat;
