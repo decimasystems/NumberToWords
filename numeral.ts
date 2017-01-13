@@ -44,8 +44,11 @@ export class Numeral {
         var integer, decimal: any;
         var dec: any;
 
-        value = this.numar.split(virgula);
-        if (value && value.length && value.length > 0 && value[0]) {
+        if(+this.numar==0){
+            ret='';
+        }else{
+             value = this.numar.split(virgula);
+              if (value && value.length && value.length > 0 && value[0]) {
             if (punct == '.') {
                 value[0] = value[0].replace(/\./g, '');
             } else if (punct == ',') {
@@ -91,6 +94,8 @@ export class Numeral {
                 ret = rezi + separator + 'si' + separator + rezd;
         } else
             ret = rezi;
+        }
+       
 
         return ret;
     };

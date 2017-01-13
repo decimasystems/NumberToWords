@@ -37,60 +37,65 @@ var Numeral = (function () {
         var r;
         var integer, decimal;
         var dec;
-        value = this.numar.split(virgula);
-        if (value && value.length && value.length > 0 && value[0]) {
-            if (punct == '.') {
-                value[0] = value[0].replace(/\./g, '');
-            }
-            else if (punct == ',') {
-                value[0] = value[0].replace(/\,/g, '');
-            }
-            integer = new Numeral(value[0]);
-            var l = value[0].length;
-            var u = +value[0].substr(l - 1, 1);
-            var z = l - 2 >= 0 ? +value[0].substr(l - 2, 1) : 0;
-            var s = l - 3 >= 0 ? +value[0].substr(l - 3, 1) : 0;
-            if ((z >= 2 && u >= 0) || (s >= 0 && z == 0 && u == 0)) {
-                rezi = integer.ToWord(separator) + 'de' + separator + valutaP;
-            }
-            else if (+value[0] == 1) {
-                rezi = integer.ToWord(separator) + valutaS;
-            }
-            else {
-                rezi = integer.ToWord(separator) + valutaP;
-            }
+        if (+this.numar == 0) {
+            ret = '';
         }
-        if (value[1]) {
-            if (value[1].length == 1) {
-                value[1] = value[1] + '0';
-                decimal = new Numeral(value[1]);
-                if (value[1] == '10') {
-                    rezd = decimal.ToWord(separator) + baniP;
+        else {
+            value = this.numar.split(virgula);
+            if (value && value.length && value.length > 0 && value[0]) {
+                if (punct == '.') {
+                    value[0] = value[0].replace(/\./g, '');
                 }
-                else
-                    rezd = decimal.ToWord(separator) + 'de' + separator + baniP;
-            }
-            else {
-                if (value[1] == '01') {
-                    rezd = 'un' + separator + baniS;
+                else if (punct == ',') {
+                    value[0] = value[0].replace(/\,/g, '');
+                }
+                integer = new Numeral(value[0]);
+                var l = value[0].length;
+                var u = +value[0].substr(l - 1, 1);
+                var z = l - 2 >= 0 ? +value[0].substr(l - 2, 1) : 0;
+                var s = l - 3 >= 0 ? +value[0].substr(l - 3, 1) : 0;
+                if ((z >= 2 && u >= 0) || (s >= 0 && z == 0 && u == 0)) {
+                    rezi = integer.ToWord(separator) + 'de' + separator + valutaP;
+                }
+                else if (+value[0] == 1) {
+                    rezi = integer.ToWord(separator) + valutaS;
                 }
                 else {
-                    decimal = new Numeral(value[1]);
-                    rezd = decimal.ToWord(separator) + baniP;
-                    if (value[1] >= '20' || value[1] >= '2') {
-                        decimal = new Numeral(value[1]);
-                        rezd = decimal.ToWord(separator) + 'de' + separator + baniP;
-                    }
+                    rezi = integer.ToWord(separator) + valutaP;
                 }
             }
-            if (+value[0] == 0) {
-                ret = rezd;
+            if (value[1]) {
+                if (value[1].length == 1) {
+                    value[1] = value[1] + '0';
+                    decimal = new Numeral(value[1]);
+                    if (value[1] == '10') {
+                        rezd = decimal.ToWord(separator) + baniP;
+                    }
+                    else
+                        rezd = decimal.ToWord(separator) + 'de' + separator + baniP;
+                }
+                else {
+                    if (value[1] == '01') {
+                        rezd = 'un' + separator + baniS;
+                    }
+                    else {
+                        decimal = new Numeral(value[1]);
+                        rezd = decimal.ToWord(separator) + baniP;
+                        if (value[1] >= '20' || value[1] >= '2') {
+                            decimal = new Numeral(value[1]);
+                            rezd = decimal.ToWord(separator) + 'de' + separator + baniP;
+                        }
+                    }
+                }
+                if (+value[0] == 0) {
+                    ret = rezd;
+                }
+                else
+                    ret = rezi + separator + 'si' + separator + rezd;
             }
             else
-                ret = rezi + separator + 'si' + separator + rezd;
+                ret = rezi;
         }
-        else
-            ret = rezi;
         return ret;
     };
     ;
