@@ -7,7 +7,7 @@ var Numeral = (function () {
         this.ordin = 0;
         this._ordinP = ['', 'mii', 'milioane', 'miliarde'];
         this._ordinS = ['', 'mie', 'milion', 'miliard'];
-        this._sute = ['', 'o', 'doua', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua'];
+        this._sute = ['', 'o', '', 'doua', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua'];
         this._zeci = ['', 'zece', 'douazeci', 'treizeci', 'patruzeci', 'cinzeci', 'saizeci', 'saptezeci', 'optzeci', 'nouazeci'];
         this._unitati = ['', 'unu', 'doi', 'trei', 'patru', 'cinci', 'sase', 'sapte', 'opt', 'noua'];
         this._sprezece = ['', 'unsprezece', 'doisprezece', 'treisprezece', 'paisprezece', 'cinsprezece', 'saisprezece', 'saptesprezece', 'optsprezece', 'nouasprezece'];
@@ -90,11 +90,13 @@ var Numeral = (function () {
                 if (+value[0] == 0) {
                     ret = rezd;
                 }
-                else
+                else {
                     ret = rezi + separator + 'si' + separator + rezd;
+                }
             }
-            else
+            else {
                 ret = rezi;
+            }
         }
         return ret;
     };
