@@ -97,7 +97,7 @@ export class Numeral {
                 ret = rezi;
             }
         }
-        
+
         return ret;
     };
 
