@@ -197,7 +197,7 @@ var Numeral = (function () {
         }
         else if ((s == 0) && (z == 0) && (u == 2)) {
             ret = two + separator + this._ordinP[this.ordin];
-        } //else if ((s == 0) && (z == 0) && (u == 0)) {
+        }
         else
             ret = this._ordinP[this.ordin];
         return ret;
@@ -229,7 +229,7 @@ var Numeral = (function () {
             }
             //1.3. sute>=1; zeci>1; unitati>=1; 459
             if ((zeci > 1) && (unitati >= 1)) {
-                rezultat = this._sute[sute] + separator + 'suta' + separator + this._zeci[zeci] + separator + this._unitati[unitati];
+                rezultat = this._sute[sute] + separator + 'suta' + separator + this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati];
             }
             //1.4. sute>=1; zeci=0; unitati>=1
             if ((zeci == 0) && (unitati > 0)) {
@@ -282,10 +282,16 @@ var Numeral = (function () {
         if ((unitati >= 1) && (zeci == 0) && (sute == 0)) {
             rezultat = this._unitati[unitati];
         }
-        if ((this.ordin > 1) && (sute > 1) && (zeci == 0 || zeci > 1) && (unitati == 2)) {
-            rezultat = this._sute[sute] + separator + 'sute' + separator + this._zeci[zeci] + separator + 'si doua';
+        if ((this.ordin > 1) && (sute > 1) && (zeci == 0) && (unitati == 2)) {
+            rezultat = this._sute[sute + 1] + separator + 'sute' + separator + 'doua';
         }
-        else if ((this.ordin > 1) && (sute == 1) && (zeci == 0 || zeci > 1) && (unitati == 2)) {
+        else if ((this.ordin > 1) && (sute > 1) && (zeci > 1) && (unitati == 2)) {
+            rezultat = this._sute[sute + 1] + separator + 'sute' + separator + this._zeci[zeci] + separator + 'si doua';
+        }
+        else if ((this.ordin > 1) && (sute == 1) && (zeci == 0) && (unitati == 2)) {
+            rezultat = this._sute[sute] + separator + 'suta' + separator + 'doua';
+        }
+        else if ((this.ordin > 1) && (sute == 1) && (zeci > 1) && (unitati == 2)) {
             rezultat = this._sute[sute] + separator + 'suta' + separator + this._zeci[zeci] + separator + 'si doua';
         }
         return rezultat;

@@ -198,9 +198,7 @@ export class Numeral {
             ret = one + separator + this._ordinS[this.ordin];
         } else if ((s == 0) && (z == 0) && (u == 2)) {
             ret = two + separator + this._ordinP[this.ordin];
-        } //else if ((s == 0) && (z == 0) && (u == 0)) {
-        // ret='';
-        //} 
+        } 
         else ret = this._ordinP[this.ordin];
 
         return ret;
@@ -236,7 +234,7 @@ export class Numeral {
 
             //1.3. sute>=1; zeci>1; unitati>=1; 459
             if ((zeci > 1) && (unitati >= 1)) {
-                rezultat = this._sute[sute] + separator + 'suta' + separator + this._zeci[zeci] + separator  + this._unitati[unitati];
+                rezultat = this._sute[sute] + separator + 'suta' + separator + this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati];
             }
             //1.4. sute>=1; zeci=0; unitati>=1
             if ((zeci == 0) && (unitati > 0)) {
@@ -273,7 +271,7 @@ export class Numeral {
         if ((zeci >= 1) && (sute == 0) && (unitati == 0)) {
             rezultat = this._zeci[zeci];
         } else if ((this.ordin >= 1) && (sute == 0) && (zeci > 1) && (unitati == 2)) {
-            rezultat = this._zeci[zeci] + separator + 'si'+ separator+ 'doua';
+            rezultat = this._zeci[zeci] + separator + 'si' + separator + 'doua';
         } else if ((this.ordin >= 1) && (sute == 0) && (zeci > 1) && (unitati == 1 || unitati > 2)) {
             rezultat = this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati];
         }
@@ -294,10 +292,13 @@ export class Numeral {
         //3.1. sute>=1;zeci=0;unitati>=1; --> si unu lei
         if ((unitati >= 1) && (zeci == 0) && (sute == 0)) {
             rezultat = this._unitati[unitati];
-        }
-        if ((this.ordin > 1) && (sute > 1) && (zeci == 0 || zeci > 1) && (unitati == 2)) {
-            rezultat = this._sute[sute] + separator + 'sute' + separator + this._zeci[zeci] + separator + 'si doua';
-        } else if ((this.ordin > 1) && (sute == 1) && (zeci == 0 || zeci > 1) && (unitati == 2)) {
+        } if ((this.ordin > 1) && (sute > 1) && (zeci == 0) && (unitati == 2)) {
+            rezultat = this._sute[sute+1] + separator + 'sute' + separator + 'doua';
+        }else if ((this.ordin > 1) && (sute > 1) && (zeci > 1) && (unitati == 2)) {
+            rezultat = this._sute[sute+1] + separator + 'sute' + separator + this._zeci[zeci] + separator + 'si doua';
+        }else if ((this.ordin > 1) && (sute == 1) && (zeci == 0) && (unitati == 2)){
+             rezultat = this._sute[sute] + separator + 'suta' + separator + 'doua';
+        }else if((this.ordin > 1) && (sute == 1) && (zeci > 1) && (unitati == 2)){
             rezultat = this._sute[sute] + separator + 'suta' + separator + this._zeci[zeci] + separator + 'si doua';
         }
 
