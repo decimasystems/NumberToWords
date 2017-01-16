@@ -141,20 +141,25 @@ export class Numeral {
     private convert3Digits(length, size, separator) {
 
         var s: string;
-        //extrag grupul de 3 cifre de la dreapta spre stanga  parcurgand sirul 
-        for (var i = size; i > length; i = i - 3) {
-            //determin numarul curent format din 3 cifre 
-            var curent = this.numar.substr(i - 3, 3);
-            if (this.ordin > 0) {
-                s = this.convertOrdin(curent, 'o', 'doua', separator);
+        if (this.numar == '0001') {
+            s = 'un';
+            this.rezultat.push(s);
+        } else
+            //extrag grupul de 3 cifre de la dreapta spre stanga  parcurgand sirul 
+            for (var i = size; i > length; i = i - 3) {
+                //determin numarul curent format din 3 cifre 
+                var curent = this.numar.substr(i - 3, 3);
+
+                if (!(curent == '000') && this.ordin > 0) {
+                    s = this.convertOrdin(curent, 'o', 'doua', separator);
+                    this.rezultat.push(s);
+                }
+                this.ordin++;
+                //fac conversia pentru un grup
+                s = this.convert(+curent, separator);
+                //rezultatul fiind un sir il voi baga intr-un vector pentru a putea face concatenarea
                 this.rezultat.push(s);
             }
-            this.ordin++;
-            //fac conversia pentru un grup
-            s = this.convert(+curent, separator);
-            //rezultatul fiind un sir il voi baga intr-un vector pentru a putea face concatenarea
-            this.rezultat.push(s);
-        }
     };
 
     //converteste toate grupurile de 1 sau 2 cifre
@@ -169,8 +174,12 @@ export class Numeral {
         } else if (this.ordin > 1) {
             x = this.convertOrdin(curent, 'un', 'doua', separator);
         }
-
-        if (!(this.ordin > 0 && (+curent == 1 || +curent == 2))) {
+        if (this.ordin == 1 && +curent == 0) {
+            x = '';
+        } else if (this.ordin >= 1 && +curent >= 20) {
+            x = this.convert(+curent, separator) + separator + 'de' + separator + this._ordinP[this.ordin];
+        }
+        else if (!(this.ordin > 0 && (+curent == 1 || +curent == 2))) {
             x = this.convert(+curent, separator) + separator + this._ordinP[this.ordin];
         }
         this.rezultat.push(x);
@@ -179,16 +188,20 @@ export class Numeral {
     // ordin mii, milioane, miliarde
     private convertOrdin(curent, one, two, separator) {
         var ret;
-        curent = +curent;
-        if (curent == 1) {
+        var l = curent.length;
+        var u = +curent.substr(l - 1, 1);
+        var z = l - 2 >= 0 ? +curent.substr(l - 2, 1) : 0;
+        var s = l - 3 >= 0 ? +curent.substr(l - 3, 1) : 0;
+        if ((s >= 0 && z >= 2 && u >= 0) || (s > 0 && z == 0 && u == 0)) {
+            ret = 'de' + separator + this._ordinP[this.ordin];
+        } else if ((s == 0) && (z == 0) && (u == 1)) {
             ret = one + separator + this._ordinS[this.ordin];
-        } else if (curent == 2) {
+        } else if ((s == 0) && (z == 0) && (u == 2)) {
             ret = two + separator + this._ordinP[this.ordin];
-        } else if ((curent >= 3 && curent <= 19) || (curent >= 101 && curent <= 119) || (curent >= 201 && curent <= 219) ||
-            (curent >= 301 && curent <= 319) || (curent >= 401 && curent <= 419) || (curent >= 501 && curent <= 619)
-            || (curent >= 701 && curent <= 719) || (curent >= 801 && curent <= 819) || (curent >= 901 && curent <= 919)) {
-            ret = this._ordinP[this.ordin];
-        } else ret = 'de' + separator + this._ordinP[this.ordin];
+        } //else if ((s == 0) && (z == 0) && (u == 0)) {
+        // ret='';
+        //} 
+        else ret = this._ordinP[this.ordin];
 
         return ret;
     };
@@ -260,7 +273,7 @@ export class Numeral {
         if ((zeci >= 1) && (sute == 0) && (unitati == 0)) {
             rezultat = this._zeci[zeci];
         } else if ((this.ordin >= 1) && (sute == 0) && (zeci > 1) && (unitati == 2)) {
-            rezultat = this._zeci[zeci] + separator + 'si doua' + separator + 'de';
+            rezultat = this._zeci[zeci] + separator + 'si doua';
         } else if ((this.ordin >= 1) && (sute == 0) && (zeci > 1) && (unitati == 1 || unitati > 2)) {
             rezultat = this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati];
         }
