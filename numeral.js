@@ -127,7 +127,7 @@ var Numeral = (function () {
             //se face concatenarea grupurilor
             ret = this.rezultat.join(separator);
             if (this.numar == '1') {
-                ret = 'un';
+                ret = 'un' + separator;
             }
         }
         return ret;

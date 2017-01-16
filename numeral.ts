@@ -130,7 +130,7 @@ export class Numeral {
             ret = this.rezultat.join(separator);
 
             if (this.numar == '1') {
-                ret = 'un';
+                ret = 'un' + separator;
             }
         }
 
