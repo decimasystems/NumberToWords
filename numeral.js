@@ -263,7 +263,7 @@ var Numeral = (function () {
             rezultat = this._zeci[zeci];
         }
         else if ((this.ordin >= 1) && (sute == 0) && (zeci > 1) && (unitati == 2)) {
-            rezultat = this._zeci[zeci] + separator + 'si doua';
+            rezultat = this._zeci[zeci] + separator + 'si' + separator + 'doua';
         }
         else if ((this.ordin >= 1) && (sute == 0) && (zeci > 1) && (unitati == 1 || unitati > 2)) {
             rezultat = this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati];

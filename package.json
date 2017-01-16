@@ -1,6 +1,6 @@
 {
   "name": "numbertowords",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "A JavaScript library to convert romanian numbers into words",
   "main": "numeral.js",
   "scripts": {
