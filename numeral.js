@@ -54,17 +54,20 @@ var Numeral = (function () {
                 var u = +value[0].substr(l - 1, 1);
                 var z = l - 2 >= 0 ? +value[0].substr(l - 2, 1) : 0;
                 var s = l - 3 >= 0 ? +value[0].substr(l - 3, 1) : 0;
-                if ((z >= 2 && u >= 0) || (s >= 0 && z == 0 && u == 0)) {
-                    rezi = integer.ToWord(separator) + 'de' + separator + valutaP;
-                }
-                else if (+value[0] == 1) {
-                    rezi = integer.ToWord(separator) + valutaS;
-                }
-                else {
-                    rezi = integer.ToWord(separator) + valutaP;
+                rezi = integer.ToWord(separator);
+                if (rezi) {
+                    if ((z >= 2 && u >= 0) || (s >= 0 && z == 0 && u == 0)) {
+                        rezi = rezi + 'de' + separator + valutaP;
+                    }
+                    else if (+value[0] == 1) {
+                        rezi = rezi + valutaS;
+                    }
+                    else {
+                        rezi = rezi + valutaP;
+                    }
                 }
             }
-            if (value[1]) {
+            if (rezi && value[1]) {
                 if (value[1].length == 1) {
                     value[1] = value[1] + '0';
                     decimal = new Numeral(value[1]);
@@ -108,8 +111,8 @@ var Numeral = (function () {
         var rest;
         //size va fi egal cu lungimea sirului
         var size = this.numar.length;
-        if (size > "999999999999,99".length) {
-            ret = "numar prea mare";
+        if (size > 12) {
+            ret = null;
         }
         else {
             cat = Math.floor(size / 3);
