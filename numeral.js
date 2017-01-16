@@ -229,7 +229,7 @@ var Numeral = (function () {
             }
             //1.3. sute>=1; zeci>1; unitati>=1; 459
             if ((zeci > 1) && (unitati >= 1)) {
-                rezultat = this._sute[sute] + separator + 'suta' + separator + this._zeci[zeci] + separator + 'si' + separator + this._unitati[unitati];
+                rezultat = this._sute[sute] + separator + 'suta' + separator + this._zeci[zeci] + separator + this._unitati[unitati];
             }
             //1.4. sute>=1; zeci=0; unitati>=1
             if ((zeci == 0) && (unitati > 0)) {
