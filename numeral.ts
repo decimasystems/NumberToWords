@@ -1,11 +1,11 @@
 export class Numeral {
-    private _ordinP;
-    private _ordinS;
-    private ordin;
-    private _sute;
-    private _zeci;
-    private _unitati;
-    private _sprezece;
+    private _ordinP: any;
+    private _ordinS: any;
+    private ordin: any;
+    private _sute: any;
+    private _zeci: any;
+    private _unitati: any;
+    private _sprezece: any;
 
     //rezultat va fi un string de tip vector
     rezultat: string[] = [""];
@@ -36,7 +36,7 @@ export class Numeral {
         return ret;
     };
     //metoda pentru convertirea monetara cu zecimale
-    public convertMoney(valutaS, valutaP, baniS, baniP, virgula, punct, separator) {
+    public convertMoney(valutaS: any, valutaP: any, baniS: any, baniP: any, virgula: any, punct: any, separator: any) {
         var ret, rezd, rezi: string = null;
         var value: string[];
         var ordinsep: string[];
@@ -104,7 +104,7 @@ export class Numeral {
     };
 
     //metoda de conversie a numerelor in cuvinte
-    public ToWord(separator) {
+    public ToWord(separator?: any) {
         var ret: string = '';
         var cat;
         var rest;
@@ -139,7 +139,7 @@ export class Numeral {
     };
 
     //converteste toate grupurile de 3 cifre
-    private convert3Digits(length, size, separator) {
+    private convert3Digits(length: any, size: any, separator: any) {
 
         var s: string;
         if (this.numar == '0001') {
@@ -164,7 +164,7 @@ export class Numeral {
     };
 
     //converteste toate grupurile de 1 sau 2 cifre
-    private convert1or2Digits(rest, separator) {
+    private convert1or2Digits(rest: any, separator: any) {
         //rest=1 sau rest=2
         var curent = this.numar.substr(0, rest);
         var x: string = "";
@@ -187,7 +187,7 @@ export class Numeral {
     };
 
     // ordin mii, milioane, miliarde
-    private convertOrdin(curent, one, two, separator) {
+    private convertOrdin(curent: any, one: any, two: any, separator: any) {
         var ret;
         var l = curent.length;
         var u = +curent.substr(l - 1, 1);
@@ -205,7 +205,7 @@ export class Numeral {
         return ret;
     };
 
-    private convert(valoare: number, separator) {
+    private convert(valoare: number, separator: any) {
         var sute, zeci, unitati: any;
         if (valoare == 0) {
             return "";
