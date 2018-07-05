@@ -21,7 +21,7 @@ export class Numeral {
     }
     //metoda pentru conversia de numere cu zecimale   
     public convertDecimal() {
-        var ret: string = null;
+        var ret: string | null = null;
         var value: string[];
         var integer, decimal: any;
 
@@ -37,7 +37,7 @@ export class Numeral {
     };
     //metoda pentru convertirea monetara cu zecimale
     public convertMoney(valutaS: any, valutaP: any, baniS: any, baniP: any, virgula: any, punct: any, separator: any) {
-        var ret, rezd, rezi: string = null;
+        var ret, rezd, rezi: string | null = null;
         var value: string[];
         var ordinsep: string[];
         var r: any;
@@ -55,14 +55,14 @@ export class Numeral {
                     value[0] = value[0].replace(/\,/g, '');
                 }
                 integer = new Numeral(value[0]);
-                var l = value[0].length;
-                var u = +value[0].substr(l - 1, 1);
-                var z = l - 2 >= 0 ? +value[0].substr(l - 2, 1) : 0;
-                var s = l - 3 >= 0 ? +value[0].substr(l - 3, 1) : 0;
+                var length = value[0].length;
+                var unitati = +value[0].substr(length - 1, 1);
+                var zeci = length - 2 >= 0 ? +value[0].substr(length - 2, 1) : 0;
+                var sute = length - 3 >= 0 ? +value[0].substr(length - 3, 1) : 0;
                 rezi = integer.ToWord(separator);
                 if (rezi) {
-                    if ((z >= 2 && u >= 0) || (s >= 0 && z == 0 && u == 0)) {
-                        rezi = rezi + 'de' + separator + valutaP;
+                    if ((zeci >= 2 && unitati >= 0) || (sute >= 0 && zeci == 0 && unitati == 0)) {
+                        rezi = rezi + separator + valutaP;
                     } else if (+value[0] == 1) {
                         rezi = rezi + valutaS;
                     } else {
@@ -77,7 +77,7 @@ export class Numeral {
                     if (value[1] == '10') {
                         rezd = decimal.ToWord(separator) + baniP;
                     } else
-                        rezd = decimal.ToWord(separator) + 'de' + separator + baniP;
+                        rezd = decimal.ToWord(separator) + separator + baniP;
                 } else {
                     if (value[1] == '01') {
                         rezd = 'un' + separator + baniS;
@@ -86,7 +86,7 @@ export class Numeral {
                         rezd = decimal.ToWord(separator) + baniP;
                         if (value[1] >= '20' || value[1] >= '2') {
                             decimal = new Numeral(value[1]);
-                            rezd = decimal.ToWord(separator) + 'de' + separator + baniP;
+                            rezd = decimal.ToWord(separator) + separator + baniP;
                         }
                     }
                 }
@@ -105,7 +105,7 @@ export class Numeral {
 
     //metoda de conversie a numerelor in cuvinte
     public ToWord(separator?: any) {
-        var ret: string = '';
+        var ret: string | null = '';
         var cat;
         var rest;
 
@@ -128,7 +128,7 @@ export class Numeral {
             //rastorn rezultatul pentru a avea ordinea corecta a grupurilor
             this.rezultat.reverse();
             //se face concatenarea grupurilor
-            ret = this.rezultat.join(separator);
+            ret = this.rezultat.join(separator).trim();
 
             if (this.numar == '1') {
                 ret = 'un' + separator;
@@ -178,7 +178,7 @@ export class Numeral {
         if (this.ordin == 1 && +curent == 0) {
             x = '';
         } else if (this.ordin >= 1 && +curent >= 20) {
-            x = this.convert(+curent, separator) + separator + 'de' + separator + this._ordinP[this.ordin];
+            x = this.convert(+curent, separator) + separator + this._ordinP[this.ordin];
         }
         else if (!(this.ordin > 0 && (+curent == 1 || +curent == 2))) {
             x = this.convert(+curent, separator) + separator + this._ordinP[this.ordin];
@@ -194,7 +194,7 @@ export class Numeral {
         var z = l - 2 >= 0 ? +curent.substr(l - 2, 1) : 0;
         var s = l - 3 >= 0 ? +curent.substr(l - 3, 1) : 0;
         if ((s >= 0 && z >= 2 && u >= 0) || (s > 0 && z == 0 && u == 0)) {
-            ret = 'de' + separator + this._ordinP[this.ordin];
+            ret = separator + this._ordinP[this.ordin];
         } else if ((s == 0) && (z == 0) && (u == 1)) {
             ret = one + separator + this._ordinS[this.ordin];
         } else if ((s == 0) && (z == 0) && (u == 2)) {
@@ -214,7 +214,7 @@ export class Numeral {
         sute = Math.floor(valoare / 100);
         zeci = Math.floor((valoare % 100) / 10);
         unitati = valoare % 10;
-        var rezultat: string;
+        var rezultat: string = '';
 
         //caz.1: cifra sutelor
         //1.1: sute=1; zeci=0; unitati=0; 100
@@ -308,4 +308,3 @@ export class Numeral {
     };
 
 };
-
